@@ -10,4 +10,14 @@
   #define __x86_64__ 1
 #endif
 
+
+#if (defined(_M_ARM) || defined(_ARM) || defined(__arm)) && !defined(__arm__)
+  #define __arm__ 1
+#endif
+
+
+#if (defined(_M_ARM64) || defined(__aarch64__) || defined(__arm64)) && !defined(__arm64__)
+  #define __arm64__ 1
+#endif
+
 #endif /* UBENCH_ARCH_DEF_H */
