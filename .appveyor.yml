@@ -1,0 +1,104 @@
+image:
+  - Visual Studio 2015
+  - Visual Studio 2017
+
+clone_depth: 10
+
+platform:
+  - x86
+  - x64
+
+environment:
+  global:
+    CYGWIN_DIR: C:\cygwin
+    CYGWIN_BASH: C:\cygwin\bin\bash
+
+  matrix:
+    - BUILD_ENV: MSVC
+
+    - BUILD_ENV: CYGWIN
+      CC: gcc
+
+    - BUILD_ENV: CYGWIN
+      CC: clang
+
+cache:
+  - '%CYGWIN_DIR%\var\cache\setup'
+
+matrix:
+  exclude:
+    - image: Visual Studio 2015
+      BUILD_ENV: CYGWIN
+
+for:
+  - matrix:
+      only:
+        - image: Visual Studio 2015
+          platform: x86
+          BUILD_ENV: MSVC
+    before_build:
+      - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
+    build_script:
+      - md build
+      - cd build
+      - cmake -G "NMake Makefiles" ..
+      - nmake
+
+  - matrix:
+      only:
+        - image: Visual Studio 2015
+          platform: x64
+          BUILD_ENV: MSVC
+    before_build:
+      - call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+      - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+    build_script:
+      - md build
+      - cd build
+      - cmake -G "NMake Makefiles" ..
+      - nmake
+
+  - matrix:
+      only:
+        - image: Visual Studio 2017
+          platform: x86
+          BUILD_ENV: MSVC
+    before_build:
+      - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+    build_script:
+      - md build
+      - cd build
+      - cmake -G "NMake Makefiles" ..
+      - nmake
+
+  - matrix:
+      only:
+        - image: Visual Studio 2017
+          platform: x64
+          BUILD_ENV: MSVC
+    before_build:
+      - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+    build_script:
+      - md build
+      - cd build
+      - cmake -G "NMake Makefiles" ..
+      - nmake
+
+  - matrix:
+      only:
+        - image: Visual Studio 2017
+          BUILD_ENV: CYGWIN
+    install:
+      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
+      - '%CYGWIN_BASH% -e -l -c "/usr/bin/rebase-trigger full"'
+      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts'
+      - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
+    build_script:
+      - md build
+      - cd build
+      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
+      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
+
+# https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+on_failure:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
