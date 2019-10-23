@@ -30,6 +30,10 @@ matrix:
     - image: Visual Studio 2015
       BUILD_ENV: CYGWIN
 
+    - platform: x86
+      BUILD_ENV: CYGWIN
+      CC: clang
+
 for:
   - matrix:
       only:
@@ -89,10 +93,11 @@ for:
         - image: Visual Studio 2017
           platform: x86
           BUILD_ENV: CYGWIN
+          CC: gcc
     environment:
-      CFLAGS: -m32
+      CC: i686-pc-cygwin-gcc
     install:
-      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
+      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang,cygwin32-gcc-g++'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
     build_script:
       - md build
@@ -105,8 +110,6 @@ for:
         - image: Visual Studio 2017
           platform: x64
           BUILD_ENV: CYGWIN
-    environment:
-      CFLAGS: -m64
     install:
       - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
