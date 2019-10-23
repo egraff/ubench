@@ -91,7 +91,10 @@ for:
     install:
       - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
       - '%CYGWIN_BASH% -e -l -c "/usr/bin/rebase-trigger full"'
+      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts --upgrade-also'
+      - '%CYGWIN_BASH% -e -l -c "/usr/bin/rebase-trigger full"'
       - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts'
+      - '%CYGWIN_BASH% -e -l -c "rebase -i -s"'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
     build_script:
       - md build
