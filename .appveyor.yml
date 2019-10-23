@@ -10,10 +10,8 @@ platform:
 
 environment:
   global:
-    CYGWIN_DIR: C:\cygwin
-    CYGWIN_BASH: C:\cygwin\bin\bash
-    CYGWIN64_DIR: C:\cygwin64
-    CYGWIN64_BASH: C:\cygwin64\bin\bash
+    CYGWIN_DIR: C:\cygwin64
+    CYGWIN_BASH: C:\cygwin64\bin\bash
 
   matrix:
     - BUILD_ENV: MSVC
@@ -24,23 +22,13 @@ environment:
     - BUILD_ENV: CYGWIN
       CC: clang
 
-    - BUILD_ENV: CYGWIN64
-      CC: gcc
-
-    - BUILD_ENV: CYGWIN64
-      CC: clang
-
 cache:
   - '%CYGWIN_DIR%\var\cache\setup'
-  - '%CYGWIN64_DIR%\var\cache\setup'
 
 matrix:
   exclude:
     - image: Visual Studio 2015
       BUILD_ENV: CYGWIN
-
-    - image: Visual Studio 2015
-      BUILD_ENV: CYGWIN64
 
 for:
   - matrix:
@@ -99,11 +87,12 @@ for:
   - matrix:
       only:
         - image: Visual Studio 2017
+          platform: x86
           BUILD_ENV: CYGWIN
+    environment:
+      CFLAGS: -m32
     install:
-      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
-      - '%CYGWIN_BASH% -e -l -c "/usr/bin/rebase-trigger full"'
-      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts'
+      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
     build_script:
       - md build
@@ -114,17 +103,18 @@ for:
   - matrix:
       only:
         - image: Visual Studio 2017
-          BUILD_ENV: CYGWIN64
+          platform: x64
+          BUILD_ENV: CYGWIN
+    environment:
+      CFLAGS: -m64
     install:
-      - '%CYGWIN64_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
-      - '%CYGWIN64_BASH% -e -l -c "/usr/bin/rebase-trigger full"'
-      - '%CYGWIN64_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts'
-      - '%CYGWIN64_DIR%\bin\cygcheck.exe -c'
+      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
+      - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
     build_script:
       - md build
       - cd build
-      - '%CYGWIN64_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
-      - '%CYGWIN64_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
+      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
+      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
 
 # https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
 on_failure:
