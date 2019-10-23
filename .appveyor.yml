@@ -95,14 +95,6 @@ for:
           COMPILER: gcc
     environment:
       CC: i686-pc-cygwin-gcc
-    install:
-      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,cygwin32-gcc-g++'
-      - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
-    build_script:
-      - md build
-      - cd build
-      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
-      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
 
   - matrix:
       only:
@@ -111,14 +103,6 @@ for:
           COMPILER: gcc
     environment:
       CC: gcc
-    install:
-      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake'
-      - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
-    build_script:
-      - md build
-      - cd build
-      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
-      - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
 
   - matrix:
       only:
@@ -127,8 +111,12 @@ for:
           COMPILER: clang
     environment:
       CC: clang
+
+  - matrix:
+      only:
+        - BUILD_ENV: CYGWIN
     install:
-      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
+      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang,cygwin32-gcc-g++'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
     build_script:
       - md build
