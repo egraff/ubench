@@ -108,6 +108,8 @@ for:
           {
             [Environment]::SetEnvironmentVariable('CC', 'clang', 'machine')
           }
+          refreshenv
+          Write-Host "Using CC=${env:CC}"
     build_script:
       - md build
       - cd build
