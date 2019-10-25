@@ -10,25 +10,26 @@ platform:
 
 environment:
   global:
-    CYGWIN_DIR: C:\cygwin
-    CYGWIN_BASH: C:\cygwin\bin\bash
+    CYGWIN_DIR: C:\cygwin64
+    CYGWIN_BASH: C:\cygwin64\bin\bash
 
   matrix:
     - BUILD_ENV: MSVC
 
     - BUILD_ENV: CYGWIN
-      CC: gcc
+      COMPILER: gcc
 
     - BUILD_ENV: CYGWIN
-      CC: clang
-
-cache:
-  - '%CYGWIN_DIR%\var\cache\setup'
+      COMPILER: clang
 
 matrix:
   exclude:
     - image: Visual Studio 2015
       BUILD_ENV: CYGWIN
+
+    - platform: x86
+      BUILD_ENV: CYGWIN
+      COMPILER: clang
 
 for:
   - matrix:
@@ -86,13 +87,28 @@ for:
 
   - matrix:
       only:
-        - image: Visual Studio 2017
-          BUILD_ENV: CYGWIN
+        - BUILD_ENV: CYGWIN
+    cache:
+      - '%CYGWIN_DIR%\var\cache\setup'
     install:
-      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang'
-      - '%CYGWIN_BASH% -e -l -c "/usr/bin/rebase-trigger full"'
-      - '%CYGWIN_DIR%\setup-x86.exe --wait --quiet-mode --no-shortcuts'
+      - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang,cygwin32-gcc-g++'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
+    before_build:
+      - ps: >-
+          if (($env:PLATFORM -eq 'x86') -and ($env:COMPILER -eq 'gcc'))
+          {
+            [Environment]::SetEnvironmentVariable('CC', 'i686-pc-cygwin-gcc', 'machine')
+          }
+          elseif (($env:PLATFORM -eq 'x64') -and ($env:COMPILER -eq 'gcc'))
+          {
+            [Environment]::SetEnvironmentVariable('CC', 'gcc', 'machine')
+          }
+          elseif (($env:PLATFORM -eq 'x64') -and ($env:COMPILER -eq 'clang'))
+          {
+            [Environment]::SetEnvironmentVariable('CC', 'clang', 'machine')
+          }
+      - refreshenv
+      - ps: Write-Output "Using CC=${env:CC}"
     build_script:
       - md build
       - cd build
