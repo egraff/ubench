@@ -90,34 +90,24 @@ for:
 
   - matrix:
       only:
-        - platform: x86
-          BUILD_ENV: CYGWIN
-          COMPILER: gcc
-    environment:
-      CC: i686-pc-cygwin-gcc
-
-  - matrix:
-      only:
-        - platform: x64
-          BUILD_ENV: CYGWIN
-          COMPILER: gcc
-    environment:
-      CC: gcc
-
-  - matrix:
-      only:
-        - platform: x64
-          BUILD_ENV: CYGWIN
-          COMPILER: clang
-    environment:
-      CC: clang
-
-  - matrix:
-      only:
         - BUILD_ENV: CYGWIN
     install:
       - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang,cygwin32-gcc-g++'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
+    before_build:
+      - ps: >-
+          if (($env:PLATFORM -eq x86) -and ($env:COMPILER -eq gcc))
+          {
+            [Environment]::SetEnvironmentVariable('CC', 'i686-pc-cygwin-gcc', 'machine')
+          }
+          elseif (($env:PLATFORM -eq x64) -and ($env:COMPILER -eq gcc))
+          {
+            [Environment]::SetEnvironmentVariable('CC', 'gcc', 'machine')
+          }
+          elseif (($env:PLATFORM -eq x64) -and ($env:COMPILER -eq clang))
+          {
+            [Environment]::SetEnvironmentVariable('CC', 'clang', 'machine')
+          }
     build_script:
       - md build
       - cd build
