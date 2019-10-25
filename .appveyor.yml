@@ -4,6 +4,10 @@ image:
 
 clone_depth: 10
 
+branches:
+  except:
+    - freebsd
+
 platform:
   - x86
   - x64

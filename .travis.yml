@@ -3,6 +3,10 @@ language: c
 git:
   depth: 50
 
+branches:
+  except:
+  - freebsd
+
 matrix:
   include:
     - name: "x64, linux, gcc 4.4, CMake 3.9.2"
