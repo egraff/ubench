@@ -96,15 +96,15 @@ for:
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
     before_build:
       - ps: >-
-          if (($env:PLATFORM -eq x86) -and ($env:COMPILER -eq gcc))
+          if (($env:PLATFORM -eq 'x86') -and ($env:COMPILER -eq 'gcc'))
           {
             [Environment]::SetEnvironmentVariable('CC', 'i686-pc-cygwin-gcc', 'machine')
           }
-          elseif (($env:PLATFORM -eq x64) -and ($env:COMPILER -eq gcc))
+          elseif (($env:PLATFORM -eq 'x64') -and ($env:COMPILER -eq 'gcc'))
           {
             [Environment]::SetEnvironmentVariable('CC', 'gcc', 'machine')
           }
-          elseif (($env:PLATFORM -eq x64) -and ($env:COMPILER -eq clang))
+          elseif (($env:PLATFORM -eq 'x64') -and ($env:COMPILER -eq 'clang'))
           {
             [Environment]::SetEnvironmentVariable('CC', 'clang', 'machine')
           }
