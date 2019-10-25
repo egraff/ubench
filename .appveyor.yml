@@ -22,9 +22,6 @@ environment:
     - BUILD_ENV: CYGWIN
       COMPILER: clang
 
-cache:
-  - '%CYGWIN_DIR%\var\cache\setup'
-
 matrix:
   exclude:
     - image: Visual Studio 2015
@@ -91,6 +88,8 @@ for:
   - matrix:
       only:
         - BUILD_ENV: CYGWIN
+    cache:
+      - '%CYGWIN_DIR%\var\cache\setup'
     install:
       - '%CYGWIN_DIR%\setup-x86_64.exe --wait --quiet-mode --no-shortcuts --upgrade-also --packages cmake,clang,cygwin32-gcc-g++'
       - '%CYGWIN_DIR%\bin\cygcheck.exe -c'
