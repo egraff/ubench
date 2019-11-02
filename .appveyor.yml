@@ -135,10 +135,12 @@ for:
       - ps: >-
           if (($env:PLATFORM -eq 'x86') -and ($env:COMPILER -eq 'mingw-gcc'))
           {
+            [Environment]::SetEnvironmentVariable('MSYSTEM', 'MINGW32', 'machine')
             [Environment]::SetEnvironmentVariable('CC', '/mingw32/bin/gcc', 'machine')
           }
           elseif (($env:PLATFORM -eq 'x64') -and ($env:COMPILER -eq 'mingw-gcc'))
           {
+            [Environment]::SetEnvironmentVariable('MSYSTEM', 'MINGW64', 'machine')
             [Environment]::SetEnvironmentVariable('CC', '/mingw64/bin/gcc', 'machine')
           }
       - refreshenv
