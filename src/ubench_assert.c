@@ -1,4 +1,5 @@
 #include "ubench_priv.h"
+#include "ubench_compiler.h"
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -7,7 +8,7 @@
 #include <assert.h>
 
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW__)
 
 #include <wchar.h>
 
@@ -17,7 +18,7 @@ ubench_assert_fn(const wchar_t *expr, const wchar_t *file, unsigned int line)
     _wassert(expr, file, line);
 }
 
-#elif defined(__GNUC__) /* defined(_MSC_VER) */
+#elif defined(__GNUC__) /* defined(_MSC_VER) || defined(__MINGW__) */
 
 void
 ubench_assert_fn(
