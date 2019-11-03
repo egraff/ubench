@@ -1,6 +1,9 @@
 #ifndef UBENCH_PRIV_H
 #define UBENCH_PRIV_H
 
+#include "ubench_compiler.h"
+
+
 #define STR_TO_WIDE_(s) L ## s
 #define STR_TO_WIDE(s) STR_TO_WIDE_(s)
 
@@ -10,7 +13,7 @@
 #define WSTR(x) STR_TO_WIDE(STRINGIFY(x))
 
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW__)
   #include <wchar.h>
 
   #define ubench_assert(expr)                                               \
@@ -24,7 +27,7 @@
 extern void
 ubench_assert_fn(const wchar_t *expr, const wchar_t *file, unsigned int line);
 
-#elif defined(__GNUC__) /* defined(_MSC_VER) */
+#elif defined(__GNUC__) /* defined(_MSC_VER) || defined(__MINGW__) */
   #define ubench_assert(expr)                                               \
   (                                                                         \
       (!(expr))                                                             \

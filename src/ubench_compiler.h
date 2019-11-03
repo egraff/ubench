@@ -1,6 +1,11 @@
 #ifndef UBENCH_COMPILER_H
 #define UBENCH_COMPILER_H
 
+#if (defined(__MINGW32__) || defined(__MINGW64__)) && !defined(__MINGW__)
+  #define __MINGW__ 1
+#endif
+
+
 #define FORCE_INLINE
 
 

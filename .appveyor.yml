@@ -12,6 +12,8 @@ environment:
   global:
     CYGWIN_DIR: C:\cygwin64
     CYGWIN_BASH: C:\cygwin64\bin\bash
+    MSYS2_DIR: C:\msys64
+    MSYS2_BASH: C:\msys64\usr\bin\bash.exe
 
   matrix:
     - BUILD_ENV: MSVC
@@ -22,10 +24,16 @@ environment:
     - BUILD_ENV: CYGWIN
       COMPILER: clang
 
+    - BUILD_ENV: MSYS2
+      COMPILER: mingw-gcc
+
 matrix:
   exclude:
     - image: Visual Studio 2015
       BUILD_ENV: CYGWIN
+
+    - image: Visual Studio 2015
+      BUILD_ENV: MSYS2
 
     - platform: x86
       BUILD_ENV: CYGWIN
@@ -111,9 +119,36 @@ for:
       - ps: Write-Output "Using CC=${env:CC}"
     build_script:
       - md build
-      - cd build
       - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
       - '%CYGWIN_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
+
+  - matrix:
+      only:
+        - BUILD_ENV: MSYS2
+    cache:
+      - '%MSYS2_DIR%\var\cache\pacman'
+    install:
+      - '%MSYS2_BASH% --login -c "pacman -Syuu --noconfirm"'
+      - '%MSYS2_BASH% --login -c "pacman -S --noconfirm mingw-w64-x86_64-toolchain"'
+      - '%MSYS2_BASH% --login -c "pacman -S --noconfirm mingw-w64-i686-toolchain"'
+    before_build:
+      - ps: >-
+          if (($env:PLATFORM -eq 'x86') -and ($env:COMPILER -eq 'mingw-gcc'))
+          {
+            [Environment]::SetEnvironmentVariable('MSYSTEM', 'MINGW32', 'machine')
+            [Environment]::SetEnvironmentVariable('CC', '/mingw32/bin/gcc', 'machine')
+          }
+          elseif (($env:PLATFORM -eq 'x64') -and ($env:COMPILER -eq 'mingw-gcc'))
+          {
+            [Environment]::SetEnvironmentVariable('MSYSTEM', 'MINGW64', 'machine')
+            [Environment]::SetEnvironmentVariable('CC', '/mingw64/bin/gcc', 'machine')
+          }
+      - refreshenv
+      - ps: Write-Output "Using CC=${env:CC}"
+    build_script:
+      - md build
+      - '%MSYS2_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && cmake -G \"Unix Makefiles\" .."'
+      - '%MSYS2_BASH% -e -l -c "cd $APPVEYOR_BUILD_FOLDER/build && make"'
 
 # https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
 on_failure:
