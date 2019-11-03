@@ -6,7 +6,26 @@
 #endif
 
 
-#define FORCE_INLINE
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201102L) && !defined(__STDC_NO_THREADS__)
+  #include <threads.h>
+#endif
+
+
+#if !defined(thread_local)
+  #if defined(_MSC_VER)
+    #define thread_local __declspec(thread)
+  #elif defined(__GNUC__)
+    #define thread_local __thread
+  #endif
+#endif
+
+
+#if !defined(thread_local)
+  #error "No thread_local support"
+#endif
+
+
+#define FORCE_INLINE inline
 
 
 #if defined(_MSC_VER)
