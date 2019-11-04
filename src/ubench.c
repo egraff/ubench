@@ -215,12 +215,14 @@ ubench_run_alg_bench(
     ubench_alg_bench_runner_fn alg_bench_runner
 )
 {
-    struct ubench_alg_run alg_run = { 0 };
-    struct ubench_runner_params runner_params = { 0 };
+    struct ubench_alg_run alg_run;
+    struct ubench_runner_params runner_params;
 
+    memset(&alg_run, 0, sizeof(alg_run));
     alg_run.ub = ub;
     alg_run.alg = alg;
 
+    memset(&runner_params, 0, sizeof(runner_params));
     runner_params.run_alg = run_alg_cb;
     runner_params.determine_overhead = determine_overhead;
 
