@@ -2,6 +2,7 @@
 #include "ubench_arch_def.h"
 #include "ubench_compiler.h"
 
+#include <ubench/ubench_time.h>
 #include <ubench/ubench.h>
 #include <stdint.h>
 
@@ -84,11 +85,11 @@ cpuid_serialize(volatile uint32_t *aux)
 
 
 static void
-tsc_clock_init(void **clock_data)
+tsc_clock_warmup(struct ubench_clock *clock)
 {
     uint32_t ui, aux;
 
-    (void)clock_data;
+    (void)clock;
 
     cpuid_serialize(&aux);
     (void)__rdtsc();
@@ -101,63 +102,48 @@ tsc_clock_init(void **clock_data)
 
     (void)__rdtscp(&ui);
     cpuid_serialize(&aux);
+}
+
+
+static ubench_time_t
+tsc_clock_start(struct ubench_clock *clock)
+{
+    uint32_t aux;
+
+    (void)clock;
+
+    cpuid_serialize(&aux);
+    return (ubench_time_t)__rdtsc();
+}
+
+
+static int64_t
+tsc_clock_stop(struct ubench_clock *clock, ubench_time_t start_time)
+{
+    ubench_time_t end_time;
+    uint32_t      ui, aux;
+
+    (void)clock;
+
+    end_time = (ubench_time_t)__rdtscp(&ui);
+    cpuid_serialize(&aux);
+
+    return ubench_time_diff(end_time, start_time);
 }
 
 
 static void
-tsc_clock_warmup(const void *clock_data)
+tsc_clock_init(struct ubench_clock *clock)
 {
-    uint32_t ui, aux;
-
-    (void)clock_data;
-
-    cpuid_serialize(&aux);
-    (void)__rdtsc();
-
-    (void)__rdtscp(&ui);
-    cpuid_serialize(&aux);
-
-    cpuid_serialize(&aux);
-    (void)__rdtsc();
-
-    (void)__rdtscp(&ui);
-    cpuid_serialize(&aux);
+    clock->clock_warmup = tsc_clock_warmup;
+    clock->clock_start = tsc_clock_start;
+    clock->clock_stop = tsc_clock_stop;
 }
 
 
-static int64_t
-tsc_clock_start(void *clock_data)
-{
-    uint32_t aux;
-
-    (void)clock_data;
-
-    cpuid_serialize(&aux);
-    return (int64_t)__rdtsc();
-}
-
-
-static int64_t
-tsc_clock_stop(void *clock_data, int64_t start_val)
-{
-    uint32_t  ui, aux;
-    int64_t   val;
-
-    (void)clock_data;
-
-    val = (int64_t)__rdtscp(&ui);
-    cpuid_serialize(&aux);
-
-    return val - start_val;
-}
-
-
-const struct ubench_clock x86_tsc_clock =
+const struct ubench_clock_cls x86_tsc_clock_cls =
 {
     .clock_init = tsc_clock_init,
-    .clock_warmup = tsc_clock_warmup,
-    .clock_start = tsc_clock_start,
-    .clock_stop = tsc_clock_stop,
 };
 
 #endif /* defined(__i386__) || defined(__x86_64__) */
