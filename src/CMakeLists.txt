@@ -16,6 +16,7 @@ add_library(ubench STATIC ${ubench_src_files})
 if(MSVC)
     target_compile_options(ubench PUBLIC /TC /W4 /WX /FA)
 else()
+    set_source_files_properties(clocks/cpu_arch_clock.c PROPERTIES COMPILE_FLAGS -msse2)
     target_compile_options(ubench PUBLIC -std=c99 -Wall -Werror -Wextra)
 endif()
 
