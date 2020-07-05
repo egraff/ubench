@@ -87,7 +87,7 @@ task:
 
     - name: "x86, linux, gcc 5"
       container:
-        dockerfile: ci/cirrus/trusty.Dockerfile
+        dockerfile: ci/cirrus/bionic.Dockerfile
       env:
         CC: gcc-5
         CXX: g++-5
@@ -97,14 +97,14 @@ task:
 
     - name: "x64, linux, gcc 5"
       container:
-        dockerfile: ci/cirrus/trusty.Dockerfile
+        dockerfile: ci/cirrus/bionic.Dockerfile
       env:
         CC: gcc-5
         CXX: g++-5
 
     - name: "x86, linux, gcc 6"
       container:
-        dockerfile: ci/cirrus/trusty.Dockerfile
+        dockerfile: ci/cirrus/bionic.Dockerfile
       env:
         CC: gcc-6
         CXX: g++-6
@@ -114,14 +114,14 @@ task:
 
     - name: "x64, linux, gcc 6"
       container:
-        dockerfile: ci/cirrus/trusty.Dockerfile
+        dockerfile: ci/cirrus/bionic.Dockerfile
       env:
         CC: gcc-6
         CXX: g++-6
 
     - name: "x86, linux, gcc 7"
       container:
-        dockerfile: ci/cirrus/trusty.Dockerfile
+        dockerfile: ci/cirrus/bionic.Dockerfile
       env:
         CC: gcc-7
         CXX: g++-7
@@ -131,12 +131,61 @@ task:
 
     - name: "x64, linux, gcc 7"
       container:
-        dockerfile: ci/cirrus/trusty.Dockerfile
+        dockerfile: ci/cirrus/bionic.Dockerfile
       env:
         CC: gcc-7
         CXX: g++-7
 
+    - name: "x86, linux, gcc 8"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        CC: gcc-8
+        CXX: g++-8
+        CFLAGS: -m32
+        CXXFLAGS: -m32
+        LDFLAGS: -m32
 
+    - name: "x64, linux, gcc 8"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        CC: gcc-8
+        CXX: g++-8
+
+    - name: "x86, linux, gcc 9"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: gcc-9
+        CXX: g++-9
+        CFLAGS: -m32
+        CXXFLAGS: -m32
+        LDFLAGS: -m32
+
+    - name: "x64, linux, gcc 9"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: gcc-9
+        CXX: g++-9
+
+    - name: "x86, linux, gcc 10"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: gcc-10
+        CXX: g++-10
+        CFLAGS: -m32
+        CXXFLAGS: -m32
+        LDFLAGS: -m32
+
+    - name: "x64, linux, gcc 10"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: gcc-10
+        CXX: g++-10
 
     - name: "x86, linux, clang 3.5"
       container:
@@ -324,6 +373,23 @@ task:
       env:
         CC: clang-9
         CXX: clang++-9
+
+    - name: "x86, linux, clang 10"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: clang-10
+        CXX: clang++-10
+        CFLAGS: -m32
+        CXXFLAGS: -m32
+        LDFLAGS: -m32
+
+    - name: "x64, linux, clang 10"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: clang-10
+        CXX: clang++-10
 
     #- name: "x64, FreeBSD"
     #  freebsd_instance:
