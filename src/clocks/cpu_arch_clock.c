@@ -1,4 +1,3 @@
-#include "ubench_priv.h"
 #include "ubench_arch_def.h"
 #include "ubench_compiler.h"
 
@@ -50,13 +49,8 @@
  */
 
 
-static FORCE_INLINE void
-cpuid_serialize(volatile uint32_t *aux)
-{
-    union cpu_info cpu_info;
-    cpuid(0, &cpu_info);
-    *aux = cpu_info.regs.eax;
-}
+extern void x86_with_sse2__tsc_clock_init(struct ubench_clock *clock, int has_rdtscp);
+extern void x86_without_sse2__tsc_clock_init(struct ubench_clock *clock, int has_rdtscp);
 
 
 static int
@@ -91,107 +85,6 @@ is_rdtscp_supported(void)
 }
 
 
-static ubench_time_t
-tsc_clock_start_with_sse2(struct ubench_clock *clock)
-{
-    ubench_time_t start_time;
-
-    (void)clock;
-
-    _mm_mfence();
-    _mm_lfence();
-    start_time = (ubench_time_t)__rdtsc();
-    _mm_lfence();
-
-    return start_time;
-}
-
-
-static ubench_time_t
-tsc_clock_start_without_sse2(struct ubench_clock *clock)
-{
-    uint32_t aux;
-
-    (void)clock;
-
-    cpuid_serialize(&aux);
-    return (ubench_time_t)__rdtsc();
-}
-
-
-static int64_t
-tsc_clock_stop_with_rdtscp_with_sse2(
-    struct ubench_clock *clock,
-    ubench_time_t start_time
-)
-{
-    ubench_time_t end_time;
-    uint32_t      ui;
-
-    (void)clock;
-
-    end_time = (ubench_time_t)__rdtscp(&ui);
-    _mm_lfence();
-
-    return ubench_time_diff(end_time, start_time);
-}
-
-
-static int64_t
-tsc_clock_stop_with_rdtscp_without_sse2(
-    struct ubench_clock *clock,
-    ubench_time_t start_time
-)
-{
-    ubench_time_t end_time;
-    uint32_t      ui, aux;
-
-    (void)clock;
-
-    end_time = (ubench_time_t)__rdtscp(&ui);
-    cpuid_serialize(&aux);
-
-    return ubench_time_diff(end_time, start_time);
-}
-
-
-static int64_t
-tsc_clock_stop_without_rdtscp_with_sse2(
-    struct ubench_clock *clock,
-    ubench_time_t start_time
-)
-{
-    ubench_time_t end_time;
-
-    (void)clock;
-
-    _mm_lfence();
-    end_time = (ubench_time_t)__rdtsc();
-    _mm_lfence();
-
-    return ubench_time_diff(end_time, start_time);
-}
-
-
-static int64_t
-tsc_clock_stop_without_rdtscp_without_sse2(
-    struct ubench_clock *clock,
-    ubench_time_t start_time
-)
-{
-    ubench_time_t end_time;
-    uint32_t      aux;
-
-    (void)clock;
-
-    cpuid_serialize(&aux);
-    end_time = (ubench_time_t)__rdtsc();
-    cpuid_serialize(&aux);
-
-    return ubench_time_diff(end_time, start_time);
-}
-
-
 static void
 tsc_clock_warmup(struct ubench_clock *clock)
 {
@@ -210,29 +103,11 @@ tsc_clock_init(struct ubench_clock *clock)
 
     if (has_sse2)
     {
-        clock->clock_start = tsc_clock_start_with_sse2;
-
-        if (has_rdtscp)
-        {
-            clock->clock_stop = tsc_clock_stop_with_rdtscp_with_sse2;
-        }
-        else
-        {
-            clock->clock_stop = tsc_clock_stop_without_rdtscp_with_sse2;
-        }
+        x86_with_sse2__tsc_clock_init(clock, has_rdtscp);
     }
     else
     {
-        clock->clock_start = tsc_clock_start_without_sse2;
-
-        if (has_rdtscp)
-        {
-            clock->clock_stop = tsc_clock_stop_with_rdtscp_without_sse2;
-        }
-        else
-        {
-            clock->clock_stop = tsc_clock_stop_without_rdtscp_without_sse2;
-        }
+        x86_without_sse2__tsc_clock_init(clock, has_rdtscp);
     }
 
     clock->clock_warmup = tsc_clock_warmup;
