@@ -2,6 +2,8 @@ set(ubench_src_files
     ubench.c
     ubench_empty_alg.c
     ubench_assert.c
+    clocks/x86_with_sse2.c
+    clocks/x86_without_sse2.c
     clocks/cpu_arch_clock.c
     clocks/default_clock.c
 )
@@ -16,6 +18,7 @@ add_library(ubench STATIC ${ubench_src_files})
 if(MSVC)
     target_compile_options(ubench PUBLIC /TC /W4 /WX /FA)
 else()
+    set_source_files_properties(clocks/x86_with_sse2.c PROPERTIES COMPILE_FLAGS -msse2)
     target_compile_options(ubench PUBLIC -std=c99 -Wall -Werror -Wextra)
 endif()
 
