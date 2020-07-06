@@ -11,4 +11,5 @@ RUN \
   apt-get install -y cmake libc6-dev-i386 && \
   apt-get install -y g++-9-multilib g++-10-multilib && \
   apt-get install -y g++-9 g++-10 && \
+  apt-get install -y g++-9-aarch64-linux-gnu g++-10-aarch64-linux-gnu && \
   apt-get install -y clang-10
