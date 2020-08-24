@@ -399,5 +399,5 @@ task:
   script:
     - mkdir -p build
     - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX:PATH=./install ..
-    - make install
+    - cmake -DCMAKE_INSTALL_PREFIX:PATH=../install ..
+    - cmake --build . --target install
