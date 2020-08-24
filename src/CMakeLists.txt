@@ -18,8 +18,12 @@ add_library(ubench STATIC ${ubench_src_files})
 if(MSVC)
     target_compile_options(ubench PUBLIC /TC /W4 /WX /FA)
 else()
-    set_source_files_properties(clocks/x86_with_sse2.c PROPERTIES COMPILE_FLAGS -msse2)
     target_compile_options(ubench PUBLIC -std=c99 -Wall -Werror -Wextra)
+
+    string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" system_processor_lower)
+    if("${system_processor_lower}" MATCHES "(x86|x64|amd64)")
+        set_source_files_properties(clocks/x86_with_sse2.c PROPERTIES COMPILE_FLAGS -msse2)
+    endif()
 endif()
 
 target_include_directories(ubench
