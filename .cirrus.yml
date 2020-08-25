@@ -422,6 +422,41 @@ task:
 
 cross_build_task:
   matrix:
+    - name: "arm64, linux, gcc 4.4"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-4.4"
+
+    - name: "arm64, linux, gcc 4.6"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-4.6"
+
+    - name: "arm64, linux, gcc 4.7"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-4.7"
+
+    - name: "arm64, linux, gcc 4.8"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-4.8"
+
+    - name: "arm64, linux, gcc 4.9"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-4.9"
+
     - name: "arm64, linux, gcc 5"
       container:
         dockerfile: ci/cirrus/bionic.Dockerfile
@@ -463,6 +498,48 @@ cross_build_task:
       env:
         TOOLCHAIN: arm64-linux-gcc
         CROSS_SUFFIX: "-10"
+
+    - name: "arm64, linux, clang 3.5"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-3.5"
+
+    - name: "arm64, linux, clang 3.6"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-3.6"
+
+    - name: "arm64, linux, clang 3.7"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-3.7"
+
+    - name: "arm64, linux, clang 3.8"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-3.8"
+
+    - name: "arm64, linux, clang 3.9"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-3.9"
+
+    - name: "arm64, linux, clang 4.0"
+      container:
+        dockerfile: ci/cirrus/trusty.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-4.0"
 
     - name: "arm64, linux, clang 5.0"
       container:
