@@ -422,6 +422,34 @@ task:
 
 cross_build_task:
   matrix:
+    - name: "arm64, linux, gcc 5"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-5"
+
+    - name: "arm64, linux, gcc 6"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-6"
+
+    - name: "arm64, linux, gcc 7"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-7"
+
+    - name: "arm64, linux, gcc 8"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-gcc
+        CROSS_SUFFIX: "-8"
+
     - name: "arm64, linux, gcc 9"
       container:
         dockerfile: ci/cirrus/focal.Dockerfile
@@ -435,6 +463,41 @@ cross_build_task:
       env:
         TOOLCHAIN: arm64-linux-gcc
         CROSS_SUFFIX: "-10"
+
+    - name: "arm64, linux, clang 5.0"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-5.0"
+
+    - name: "arm64, linux, clang 6.0"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-6.0"
+
+    - name: "arm64, linux, clang 7"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-7"
+
+    - name: "arm64, linux, clang 8"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-8"
+
+    - name: "arm64, linux, clang 9"
+      container:
+        dockerfile: ci/cirrus/bionic.Dockerfile
+      env:
+        TOOLCHAIN: arm64-linux-clang
+        CROSS_SUFFIX: "-9"
 
     - name: "arm64, linux, clang 10"
       container:
