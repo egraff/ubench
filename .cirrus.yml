@@ -391,6 +391,23 @@ task:
         CC: clang-10
         CXX: clang++-10
 
+    - name: "x86, linux, clang 11"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: clang-11
+        CXX: clang++-11
+        CFLAGS: -m32
+        CXXFLAGS: -m32
+        LDFLAGS: -m32
+
+    - name: "x64, linux, clang 11"
+      container:
+        dockerfile: ci/cirrus/focal.Dockerfile
+      env:
+        CC: clang-11
+        CXX: clang++-11
+
     #- name: "x64, FreeBSD"
     #  freebsd_instance:
     #    image_family: freebsd-12-0
