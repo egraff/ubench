@@ -2,7 +2,7 @@ FROM ubuntu:xenial
 
 RUN \
   apt-get update && \
-  apt-get install -y wget software-properties-common
+  apt-get install -y wget software-properties-common apt-utils apt-transport-https
 
 RUN \
   wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
