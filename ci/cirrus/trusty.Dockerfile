@@ -14,5 +14,4 @@ RUN \
   apt-get install -y cmake3 libc6-dev-i386 && \
   apt-get install -y g++-4.4-multilib g++-4.6-multilib && \
   apt-get install -y g++-4.4 g++-4.6 && \
-  apt-get install -y g++-4.4-aarch64-linux-gnu g++-4.6-aarch64-linux-gnu && \
   apt-get install -y clang-3.5 clang-3.6 clang-3.7
