@@ -7,6 +7,7 @@ clone_depth: 10
 platform:
   - x86
   - x64
+  - arm64
 
 environment:
   global:
@@ -38,6 +39,15 @@ matrix:
     - platform: x86
       BUILD_ENV: CYGWIN
       COMPILER: clang
+
+    - platform: arm64
+      BUILD_ENV: CYGWIN
+
+    - platform: arm64
+      BUILD_ENV: MSYS2
+
+    - platform: arm64
+      image: Visual Studio 2015
 
 for:
   - matrix:
@@ -92,6 +102,19 @@ for:
       - cd build
       - cmake -G "NMake Makefiles" -DCMAKE_INSTALL_PREFIX:PATH=../install ..
       - cmake --build . --target install
+
+  - matrix:
+      only:
+        - image: Visual Studio 2017
+          platform: arm64
+          BUILD_ENV: MSVC
+    before_build:
+      - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64_arm64
+    build_script:
+      - md build
+      - cd build
+      - cmake -G "NMake Makefiles" ..
+      - nmake
 
   - matrix:
       only:

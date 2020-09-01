@@ -77,4 +77,8 @@ x86_with_sse2__tsc_clock_init(struct ubench_clock *clock, int has_rdtscp)
     }
 }
 
-#endif /* defined(__i386__) || defined(__x86_64__) */
+#else /* defined(__i386__) || defined(__x86_64__) */
+
+typedef void prevent_empty_translation_unit;
+
+#endif

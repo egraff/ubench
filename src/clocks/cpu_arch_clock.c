@@ -5,6 +5,10 @@
   #include "ubench_intrin_x86.h"
 #endif /* defined(__i386__) || defined(__x86_64__) */
 
+#if defined(__arm64__)
+  #include "ubench_intrin_arm64.h"
+#endif /* defined(__arm64__) */
+
 #include <ubench/ubench_time.h>
 #include <ubench/ubench.h>
 #include <stdint.h>
@@ -122,4 +126,109 @@ const struct ubench_clock_cls ubench_arch_x86_tsc_clock_cls =
 
 const struct ubench_clock_cls * const ubench_cycle_clock_cls = &ubench_arch_x86_tsc_clock_cls;
 
-#endif /* defined(__i386__) || defined(__x86_64__) */
+#elif defined(__arm64__) /* defined(__i386__) || defined(__x86_64__) */
+
+static void
+cntvct_clock_warmup(struct ubench_clock *clock)
+{
+    (void)clock;
+}
+
+
+static ubench_time_t
+cntvct_clock_start(struct ubench_clock *clock)
+{
+    ubench_time_t start_time;
+
+    (void)clock;
+
+    __dsb(_ARM64_BARRIER_SY);
+    __isb(_ARM64_BARRIER_SY);
+    start_time = (ubench_time_t)arm64_read_cntvct_el0();
+    __isb(_ARM64_BARRIER_SY);
+
+    return start_time;
+}
+
+
+static int64_t
+cntvct_clock_stop(struct ubench_clock *clock, ubench_time_t start_time)
+{
+    ubench_time_t end_time;
+
+    (void)clock;
+
+    __isb(_ARM64_BARRIER_SY);
+    end_time = (ubench_time_t)arm64_read_cntvct_el0();
+
+    return ubench_time_diff(end_time, start_time);
+}
+
+
+static void
+cntvct_clock_init(struct ubench_clock *clock)
+{
+    clock->clock_warmup = cntvct_clock_warmup;
+    clock->clock_start = cntvct_clock_start;
+    clock->clock_stop = cntvct_clock_stop;
+}
+
+
+const struct ubench_clock_cls ubench_arch_arm64_cntvct_clock_cls =
+{
+    .clock_init = cntvct_clock_init,
+};
+
+
+static void
+pmccntr_clock_warmup(struct ubench_clock *clock)
+{
+    (void)clock;
+}
+
+
+static ubench_time_t
+pmccntr_clock_start(struct ubench_clock *clock)
+{
+    ubench_time_t start_time;
+
+    (void)clock;
+
+    __dsb(_ARM64_BARRIER_SY);
+    __isb(_ARM64_BARRIER_SY);
+    start_time = (ubench_time_t)arm64_read_pmccntr_el0();
+    __isb(_ARM64_BARRIER_SY);
+
+    return start_time;
+}
+
+
+static int64_t
+pmccntr_clock_stop(struct ubench_clock *clock, ubench_time_t start_time)
+{
+    ubench_time_t end_time;
+
+    (void)clock;
+
+    __isb(_ARM64_BARRIER_SY);
+    end_time = (ubench_time_t)arm64_read_pmccntr_el0();
+
+    return ubench_time_diff(end_time, start_time);
+}
+
+
+static void
+pmccntr_clock_init(struct ubench_clock *clock)
+{
+    clock->clock_warmup = pmccntr_clock_warmup;
+    clock->clock_start = pmccntr_clock_start;
+    clock->clock_stop = pmccntr_clock_stop;
+}
+
+
+const struct ubench_clock_cls ubench_arch_arm64_pmccntr_clock_cls =
+{
+    .clock_init = pmccntr_clock_init,
+};
+
+#endif /* defined(__arm64__) */
